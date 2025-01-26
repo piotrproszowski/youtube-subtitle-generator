@@ -12,11 +12,6 @@ A Python tool that generates subtitles from YouTube videos using OpenAI's Whispe
 
 1. Clone the repository:
 
-```bash
-git clone https://github.com/YOUR_USERNAME/youtube-subtitle-generator.git
-cd youtube-subtitle-generator
-```
-
 2. Install FFmpeg:
 
 - On Windows:
