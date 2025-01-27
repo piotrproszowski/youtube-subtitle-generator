@@ -12,7 +12,7 @@ except AttributeError:
 from typing import Optional
 
 def check_ffmpeg():
-    """Sprawdza czy FFmpeg jest zainstalowany w systemie."""
+    """Check if FFmpeg is installed."""
     if not shutil.which('ffmpeg'):
         print("Error: FFmpeg is not installed!")
         print("\nTo install FFmpeg:")
@@ -46,7 +46,9 @@ class SubtitleExtractor:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(video_url, download=False)
             video_title = info['title']
-            return "".join(x for x in video_title if x.isalnum() or x in (' ', '-', '_'))[:100]
+            safe_name = "".join(x for x in video_title if x.isalnum() or x in (' ', '-', '_'))
+            safe_name = safe_name.replace(' ', '_')
+            return safe_name[:100]
 
     def extract_subtitles(self, video_url: str) -> Optional[str]:
         """
@@ -57,8 +59,13 @@ class SubtitleExtractor:
             str: Generated subtitles or None if error occurs
         """
         try:
+            if not os.path.exists(self.output_dir):
+                os.makedirs(self.output_dir)
+
             safe_filename = self._get_safe_filename(video_url)
-            audio_path = os.path.join(self.output_dir, f"{safe_filename}.mp3")
+            audio_path = os.path.join(self.output_dir, safe_filename)
+            
+            audio_path = os.path.abspath(audio_path)
 
             ydl_opts = {
                 'format': 'bestaudio/best',
@@ -71,23 +78,31 @@ class SubtitleExtractor:
                 'quiet': True,
             }
 
+            print("Downloading audio...")
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([video_url])
 
-            result = self.model.transcribe(audio_path)
-            os.remove(audio_path)
+            print("Generating subtitles...")
+            final_audio_path = audio_path + '.mp3'
+            if not os.path.exists(final_audio_path):
+                raise FileNotFoundError(f"Audio file not found at: {final_audio_path}")
+            
+            result = self.model.transcribe(final_audio_path)
+            
+            if os.path.exists(final_audio_path):
+                os.remove(final_audio_path)
             
             return result["text"]
 
         except Exception as e:
             print(f"Error during processing: {str(e)}")
+            if 'final_audio_path' in locals() and os.path.exists(final_audio_path):
+                os.remove(final_audio_path)
             return None
 
 def main():
-    # Sprawdzenie FFmpeg przed rozpoczęciem
     check_ffmpeg()
     
-    # Pobieranie linku od użytkownika
     print("Enter YouTube video URL:")
     video_url = input().strip()
     
