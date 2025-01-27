@@ -64,6 +64,7 @@ class SubtitleExtractor:
 
             safe_filename = self._get_safe_filename(video_url)
             audio_path = os.path.join(self.output_dir, safe_filename)
+            text_path = os.path.join(self.output_dir, safe_filename + '.txt')
             
             audio_path = os.path.abspath(audio_path)
 
@@ -92,6 +93,9 @@ class SubtitleExtractor:
             if os.path.exists(final_audio_path):
                 os.remove(final_audio_path)
             
+            with open(text_path, 'w', encoding='utf-8') as f:
+                f.write(result["text"])
+            
             return result["text"]
 
         except Exception as e:
@@ -119,8 +123,9 @@ def main():
     subtitles = extractor.extract_subtitles(video_url)
     
     if subtitles:
-        print("\nGenerated subtitles:")
-        print(subtitles)
+        print("\nGenerated subtitles have been saved to file in 'downloads' directory")
+        print("\nFirst 500 characters of subtitles:")
+        print(subtitles[:500] + "...")
     else:
         print("Failed to generate subtitles.")
 
