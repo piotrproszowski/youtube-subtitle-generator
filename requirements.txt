@@ -1,2 +1,2 @@
-yt-dlp==2024.3.10
+yt-dlp==2025.1.26
 openai-whisper==20231117 
