@@ -1,4 +1,4 @@
-# YouTube Subtitle Generator
+# Transcript Generator
 
 A Python tool that generates subtitles from YouTube videos using OpenAI's Whisper model.
 
