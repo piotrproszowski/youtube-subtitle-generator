@@ -31,4 +31,13 @@ ENV/
 *.swo
 
 # Project specific
-downloads/ 
+downloads/
+*.csv
+*.json
+*.zip
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Temporary files
+/tmp/ 
