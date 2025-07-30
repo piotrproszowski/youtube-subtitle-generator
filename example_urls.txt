@@ -1,0 +1,7 @@
+# Example URLs file for batch processing
+# Add one YouTube URL per line
+# Lines starting with # are ignored
+
+# Example URLs (these are sample URLs - replace with actual video URLs):
+# https://www.youtube.com/watch?v=dQw4w9WgXcQ
+# https://youtu.be/dQw4w9WgXcQ
